@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:prop/Register/Auth_cubit/states.dart';
+import 'package:prop/shared/components/component.dart';
 
 import '../../services/users.dart';
 
@@ -24,7 +25,7 @@ class AuthCubit extends Cubit<AuthStates> {
     try {
       // Make an HTTP POST request to the register endpoint
       Response response = await http.post(
-        Uri.parse("http://127.0.0.1/BackEyes_v2/public/api/register"),
+        Uri.parse("$localhost/BackEyes_v2/public/api/register"),
         body: {
           "name": name,
           "email": email,

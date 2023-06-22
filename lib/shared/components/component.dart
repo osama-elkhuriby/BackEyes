@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+
+
+String localhost = "http://127.0.0.1";
+
+
+
+
+
 Widget defaultButton({
   double  width=double.infinity,
   Color  background=Colors.black,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:prop/shared/components/component.dart';
 import 'dart:convert';
 
 import '../../services/users.dart';
@@ -26,7 +27,7 @@ class _CamerasState extends State<Cameras> {
   String? token = User.loggedInUser!.apiToken ;
 
   Future<void> fetchCameraLocations() async {
-    final url = Uri.parse('http://127.0.0.1/BackEyes_v2/public/api/locations');
+    final url = Uri.parse('$localhost/BackEyes_v2/public/api/locations');
     final headers = {'Authorization': 'Bearer $token'};
 
     try {

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:prop/shared/components/component.dart';
 import 'dart:convert';
 
 import '../../services/users.dart';
@@ -16,7 +17,7 @@ class LoginCubit extends Cubit<LoginStates> {
   void login({required String email, required String password}) async {
     emit(LoginLoadingState());
     try {
-      final url = Uri.parse('http://127.0.0.1/BackEyes_v2/public/api/login');
+      final url = Uri.parse('$localhost/BackEyes_v2/public/api/login');
       final response = await http.post(url, body: {
         'email': email,
         'password': password,

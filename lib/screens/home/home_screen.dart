@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/users.dart';
+import '../../shared/components/component.dart';
 import '../qr_code/barcode.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late String placeName = _controller.text;
 
   Future<void> addCamera(String placeName) async {
-    final url = Uri.parse('http://127.0.0.1/BackEyes_v2/public/api/locations');
+    final url = Uri.parse('$localhost/BackEyes_v2/public/api/locations');
     final headers = {'Authorization': 'Bearer $token'};
     final body = {'place_name': placeName};
 

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:prop/screens/members/cubit/states.dart';
 import 'package:prop/services/member_model.dart';
 import 'package:prop/services/users.dart';
+import 'package:prop/shared/components/component.dart';
 
 import '../../../shared/network/local_network.dart';
 
@@ -19,7 +20,7 @@ class MembersCubit extends Cubit<MembersStates> {
     String? token = User.loggedInUser!.apiToken ;
     emit(MembersLoadingState());
     try {
-      final response = await http.get(Uri.parse("http://127.0.0.1/BackEyes_v2/public/api/members"),
+      final response = await http.get(Uri.parse("$localhost/BackEyes_v2/public/api/members"),
         headers: {
           'Authorization': 'Bearer $token',
         },

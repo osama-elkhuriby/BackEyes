@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:prop/shared/components/component.dart';
 
 import '../../login/login.dart';
 import 'states.dart';
@@ -19,7 +20,7 @@ class ForgetCubit extends Cubit<ForgetStates> {
 
     try {
       Response response = await http.post(
-        Uri.parse("http://127.0.0.1/BackEyes_v2/public/api/forget-password"),
+        Uri.parse("$localhost/BackEyes_v2/public/api/forget-password"),
         body: {
           "email": email,
         },
@@ -52,7 +53,7 @@ class ForgetCubit extends Cubit<ForgetStates> {
     try {
       Response response = await http.post(
         Uri.parse(
-            "http://127.0.0.1/BackEyes_v2/public/api/verify-code-reset-password"),
+            "$localhost/BackEyes_v2/public/api/verify-code-reset-password"),
         body: {
           "email": email,
           "code": code,
@@ -81,7 +82,7 @@ class ForgetCubit extends Cubit<ForgetStates> {
 
     try {
       Response response = await http.post(
-        Uri.parse("http://127.0.0.1/BackEyes_v2/public/api/reset-password"),
+        Uri.parse("$localhost/BackEyes_v2/public/api/reset-password"),
         body: {
           "user_id": userId,
           "token": token,

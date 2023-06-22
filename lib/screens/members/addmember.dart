@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:prop/shared/components/component.dart';
 
 class AddMembersPage extends StatefulWidget {
   const AddMembersPage({Key? key}) : super(key: key);
@@ -145,7 +146,7 @@ class _AddMembersPageState extends State<AddMembersPage> {
 
 
   Future<void> _saveMember() async {
-    final url = 'http://127.0.0.1/BackEyes_v2/public/api/members'; // Replace with your API endpoint URL
+    final url = '$localhost/BackEyes_v2/public/api/members'; // Replace with your API endpoint URL
 
     // Get the member name and image file
     final memberName = _memberNameController.text;

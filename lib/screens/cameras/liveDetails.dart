@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:prop/screens/cameras/cameras_live.dart';
+import 'package:prop/shared/components/component.dart';
 
 import '../../services/users.dart';
 
@@ -28,7 +29,7 @@ class _LiveDatailsState extends State<LiveDatails> {
 
 
 
-  final url = Uri.parse('http://127.0.0.1/BackEyes_v2/public/api/alerts');
+  final url = Uri.parse('$localhost/BackEyes_v2/public/api/alerts');
   final headers = {'Authorization': 'Bearer $token'};
 
   Future<void> fetchAlerts() async {

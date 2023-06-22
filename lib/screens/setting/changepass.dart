@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:prop/shared/components/component.dart';
 
 import '../../For_get/forget_cubit/states.dart';
 import '../../services/users.dart';
@@ -34,7 +35,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   Future<void> forget({required String email}) async {
     try {
       Response response = await http.post(
-        Uri.parse("http://127.0.0.1/BackEyes_v2/public/api/forget-password"),
+        Uri.parse("$localhost/BackEyes_v2/public/api/forget-password"),
         body: {
           "email": email,
         },
@@ -58,7 +59,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
 
   Future<void> savePassword(String newPassword) async {
-    final url = 'http://127.0.0.1/BackEyes_v2/public/api/reset-password'; // Replace with your API endpoint URL
+    final url = '$localhost/BackEyes_v2/public/api/reset-password'; // Replace with your API endpoint URL
 
     try {
       final response = await http.post(
