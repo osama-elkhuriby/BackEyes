@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
+import '../../services/users.dart';
 import 'cameras_live.dart';
 
 class Cameras extends StatefulWidget {
@@ -9,7 +12,39 @@ class Cameras extends StatefulWidget {
   State<Cameras> createState() => _CamerasState();
 }
 
+List<String> cameraLocations = [];
+
 class _CamerasState extends State<Cameras> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCameraLocations();
+  }
+
+  String? token = User.loggedInUser!.apiToken ;
+
+  Future<void> fetchCameraLocations() async {
+    final url = Uri.parse('http://127.0.0.1/BackEyes_v2/public/api/locations');
+    final headers = {'Authorization': 'Bearer $token'};
+
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List<dynamic>;
+        final locations = data.map((location) => location['place_name'] as String).toList();
+        setState(() {
+          cameraLocations = locations;
+        });
+      } else {
+        // Handle the error response here
+      }
+    } catch (e) {
+      // Handle any exceptions here
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -47,8 +82,8 @@ class _CamerasState extends State<Cameras> {
                   ),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: 3,
-                  itemBuilder: (context, index) => cameraPlace(),
+                  itemCount: cameraLocations.length,
+                  itemBuilder: (context, index) => cameraPlace(cameraLocations[index]),
                 ),
               )
             ],
@@ -58,33 +93,46 @@ class _CamerasState extends State<Cameras> {
     );
   }
 
-  Widget cameraPlace() {
+  Widget cameraPlace(String location) {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CamerasLive(),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => CamerasLive(),
+          ),
+        );
       },
       child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
             child: Image.network(
-                'https://img.freepik.com/premium-vector/living-room-with-chair-sofa-window-bookshelf-flat-ozy-interior-cartoon-style_273525-112.jpg?w=1060'),
+              'https://hips.hearstapps.com/hmg-prod/images/sitting-rooms-hilliard-locust-18-11-20-1578948041.jpg?crop=1.00xw:0.771xh;0,0.180xh&resize=1120:*',
+            ),
           ),
           Positioned(
             bottom: 15,
             left: 15,
-            child: Text(
-              'Living Room',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              child: Text(
+                location,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
 }

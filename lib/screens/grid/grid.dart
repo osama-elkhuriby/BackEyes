@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prop/Register/signup.dart';
 
 
+import '../../login/login.dart';
 import '../home/home_screen.dart';
 import '../layout/layout.dart';
 import 'content.dart';
@@ -162,7 +163,7 @@ class _GridState extends State<Grid> {
                   child: TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => SignUp()));
+                            builder: (context) => LayoutScreen()));
                       },
                       child: Text(
                         "Skip",

@@ -1,29 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:prop/screens/cameras/cameras.dart';
+import 'package:video_player/video_player.dart';
+import 'package:http/http.dart' as http;
 
 import 'liveDetails.dart';
 
 class CamerasLive extends StatefulWidget {
-  const CamerasLive({super.key});
+  const CamerasLive({Key? key}) : super(key: key);
 
   @override
   State<CamerasLive> createState() => _CamerasLiveState();
 }
 
+int index = 0;
+String loc_name = cameraLocations[index] ;
+
 class _CamerasLiveState extends State<CamerasLive> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.asset('assets/video.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(children: [
-          ListView.separated(
+        child: Column(
+          children: [
+            ListView.separated(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               itemBuilder: (context, index) => cameraLiveItems(context),
               separatorBuilder: (context, index) => SizedBox(
-                    height: 20,
-                  ),
-              itemCount: 2),
-        ]),
+                height: 20,
+              ),
+              itemCount: 1,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -32,21 +58,18 @@ class _CamerasLiveState extends State<CamerasLive> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LiveDatails(),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => LiveDatails(),
+          ),
+        );
       },
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.network(
-              'https://img.freepik.com/premium-vector/living-room-with-chair-sofa-window-bookshelf-flat-ozy-interior-cartoon-style_273525-112.jpg?w=1060',
-              height: 300,
-              fit: BoxFit.fill,
-            ),
+          AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
           ),
           Positioned(
             top: 30,
@@ -57,24 +80,25 @@ class _CamerasLiveState extends State<CamerasLive> {
               child: Row(
                 children: [
                   IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      )),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                    ),
+                  ),
                   CircleAvatar(
                     backgroundColor: Colors.red,
                     radius: 5,
                   ),
-                  SizedBox(
-                    width: 5,
-                  ),
+                  SizedBox(width: 5),
                   Text(
                     'Live',
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -86,26 +110,28 @@ class _CamerasLiveState extends State<CamerasLive> {
             width: double.infinity,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Garden(back door)',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    Text(
-                      '1st camera',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Icon(
-                  Icons.zoom_out_map,
-                  color: Colors.white,
-                )
-              ]),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        loc_name,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      Text(
+                        '1st camera',
+                        style: TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  Icon(
+                    Icons.zoom_out_map,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

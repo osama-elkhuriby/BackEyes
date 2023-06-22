@@ -94,7 +94,7 @@ class ForgetCubit extends Cubit<ForgetStates> {
         if (data['status'] == true) {
           debugPrint("Change password success. Data: $data");
           emit(ChangePasswordSuccessState());
-          navigateToLoginPage();
+
         } else {
           debugPrint("Failed to change password. Reason: ${data['message']}");
           emit(ChangePasswordFailedState(message: data['message']));
@@ -127,13 +127,5 @@ class ForgetCubit extends Cubit<ForgetStates> {
     isTimerRunning = false;
   }
 
-  void navigateToLoginPage() {
-    // Use the appropriate navigation method based on your app's navigation setup
-    // For example, using MaterialPageRoute:
-    Navigator.pushAndRemoveUntil(
-      context as BuildContext,
-      MaterialPageRoute(builder: (context) => Login()),
-          (route) => false, // Remove all previous routes from the stack
-    );
-  }
+
 }

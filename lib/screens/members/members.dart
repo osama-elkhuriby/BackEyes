@@ -4,6 +4,8 @@ import 'package:prop/screens/members/cubit/cubit.dart';
 import 'package:prop/screens/members/cubit/states.dart';
 import 'package:prop/services/member_model.dart';
 
+
+
 import 'addmember.dart';
 
 class Members extends StatelessWidget {
@@ -13,6 +15,7 @@ class Members extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
@@ -36,116 +39,120 @@ class Members extends StatelessWidget {
             SizedBox(
               height: height * 0.05,
             ),
-            BlocConsumer<MembersCubit, MembersStates>(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  if (state is MembersSuccessState) {
-                    return Expanded(
-                      child: Column(
-                        children: [
-                          GridView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                            itemCount: 4,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                child: Column(
-                                  children: <Widget>[
-                                    Image.network(state.memberList.memberImage!),
-                                    Text(state.memberList.memberName!),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                          SizedBox(
-                            width: width * 0.85,
-                            child: Card(
-                              shape: const StadiumBorder(
-                                side: BorderSide(
-                                  color: Colors.black,
-                                  width: 2.0,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddMembersPage()));
-                                      },
-                                      child: const Text(
-                                        'Tap here to add member',
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Poppins",
-                                            color: Color(0xff00101D)),
-                                      )),
-                                  const Icon(Icons.add)
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  }
-                  return Column(
-                    children: [
-                      const Text(
-                        'No Member add yet',
-                        style: TextStyle(fontSize: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: height * 0.05,
-                      ),
-                      SizedBox(
-                        width: width * 0.85,
-                        child: Card(
-                          shape: const StadiumBorder(
-                            side: BorderSide(
-                              color: Colors.black,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddMembersPage()));
-                                  },
-                                  child: const Text(
-                                    'Tap here to add new member',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Poppins",
-                                        color: Color(0xff00101D)),
-                                  )),
-                              const Icon(Icons.add)
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                })
+            BlocBuilder<MembersCubit, MembersStates>(
+              builder: (context, state) {
+                if (state is MembersLoadingState) {
+                  return CircularProgressIndicator();
+                } else if (state is MembersSuccessState) {
+                  return _buildMembersList(state.memberList, width, context);
+                } else {
+                  return _buildNoMembers(width, context);
+                }
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Column memberInfo(double height) {
+  Widget _buildMembersList(List<MemberModel> memberList, double width, BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          GridView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            itemCount: memberList.length,
+            itemBuilder: (BuildContext context, int index) {
+              final member = memberList[index];
+              return Container(
+                child: Column(
+                  children: <Widget>[
+                    Image.network(member.memberImage!),
+                    Text(member.memberName!),
+                  ],
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            width: width * 0.85,
+            child: Card(
+              shape: const StadiumBorder(
+                side: BorderSide(
+                  color: Colors.black,
+                  width: 2.0,
+                ),
+              ),
+              child: Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AddMembersPage()));
+                    },
+                    child: const Text(
+                      'Tap here to add member',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Poppins",
+                        color: Color(0xff00101D),
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.add),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoMembers(double width, BuildContext context) {
     return Column(
       children: [
-        Image(image: NetworkImage('')),
-        SizedBox(
-          height: height * 0.02,
+        const Text(
+          'No Member added yet',
+          style: TextStyle(fontSize: 20),
+          textAlign: TextAlign.center,
         ),
-        Text('Moahemd'),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.05,
+        ),
+        SizedBox(
+          width: width * 0.85,
+          child: Card(
+            shape: const StadiumBorder(
+              side: BorderSide(
+                color: Colors.black,
+                width: 2.0,
+              ),
+            ),
+            child: Row(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AddMembersPage()));
+                  },
+                  child: const Text(
+                    'Tap here to add new member',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "Poppins",
+                      color: Color(0xff00101D),
+                    ),
+                  ),
+                ),
+                const Icon(Icons.add),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

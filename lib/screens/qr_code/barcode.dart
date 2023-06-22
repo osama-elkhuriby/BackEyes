@@ -12,8 +12,8 @@ class QrCodeScreen extends StatefulWidget {
 }
 
 class _QrCodeScreenState extends State<QrCodeScreen> {
-var serialNumber = TextEditingController();
-@override
+  var serialNumber = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -36,7 +36,7 @@ var serialNumber = TextEditingController();
             ),
             InkWell(
                 onTap: ()async {
-                var res = await Navigator.push(context,
+                  var res = await Navigator.push(context,
                       MaterialPageRoute(builder: (context) => SimpleBarcodeScannerPage()));
                   setState(() {
                     if (res is String) {
@@ -74,9 +74,9 @@ var serialNumber = TextEditingController();
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 enabledBorder:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                 border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
                 suffixIcon: IconButton(
                   icon: const Icon(
                     Icons.arrow_circle_right_rounded,

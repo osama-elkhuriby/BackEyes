@@ -1,51 +1,86 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:prop/screens/cameras/cameras_live.dart';
+
+import '../../services/users.dart';
 
 class LiveDatails extends StatefulWidget {
-  const LiveDatails({super.key});
+  const LiveDatails({Key? key}) : super(key: key);
 
   @override
   State<LiveDatails> createState() => _LiveDatailsState();
 }
 
+String? token = User.loggedInUser!.apiToken ;
+
 class _LiveDatailsState extends State<LiveDatails> {
+  List<Alert> alerts = [];
+
+  @override
+
+  void initState() {
+    super.initState();
+    fetchAlerts();
+  }
+
+
+
+  final url = Uri.parse('http://127.0.0.1/BackEyes_v2/public/api/alerts');
+  final headers = {'Authorization': 'Bearer $token'};
+
+  Future<void> fetchAlerts() async {
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        alerts = data.map((item) => Alert.fromJson(item)).toList();
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(children: [
-          cameraLiveItems(context),
-          Card(
-            elevation: 5,
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '30/11/2022',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+        child: Column(
+          children: [
+            cameraLiveItems(context),
+            Card(
+              elevation: 5,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '25/06/2023',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text('${alerts.length} Events'),
+                      ],
                     ),
-                    Text('3 Events'),
-                  ],
-                ),
+                  ),
+                  Spacer(),
+                  Icon(Icons.list),
+                ],
               ),
-              Spacer(),
-              Icon(Icons.list),
-            ]),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          ListView.separated(
+            ),
+            SizedBox(height: 20),
+            ListView.separated(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
-              itemBuilder: (context, index) => liveDetails(),
-              separatorBuilder: (context, index) => SizedBox(
-                    height: 20,
-                  ),
-              itemCount: 3),
-        ]),
+              itemBuilder: (context, index) => liveDetails(alerts[index]),
+              separatorBuilder: (context, index) => SizedBox(height: 20),
+              itemCount: alerts.length,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -57,7 +92,7 @@ class _LiveDatailsState extends State<LiveDatails> {
         ClipRRect(
           borderRadius: BorderRadius.circular(15),
           child: Image.network(
-            'https://img.freepik.com/premium-vector/living-room-with-chair-sofa-window-bookshelf-flat-ozy-interior-cartoon-style_273525-112.jpg?w=1060',
+            'https://hips.hearstapps.com/hmg-prod/images/sitting-rooms-hilliard-locust-18-11-20-1578948041.jpg?crop=1.00xw:0.771xh;0,0.180xh&resize=1120:*',
             height: 300,
             fit: BoxFit.fill,
           ),
@@ -71,24 +106,25 @@ class _LiveDatailsState extends State<LiveDatails> {
             child: Row(
               children: [
                 IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    )),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                  ),
+                ),
                 CircleAvatar(
                   backgroundColor: Colors.red,
                   radius: 5,
                 ),
-                SizedBox(
-                  width: 5,
-                ),
+                SizedBox(width: 5),
                 Text(
                   'Live',
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -100,67 +136,104 @@ class _LiveDatailsState extends State<LiveDatails> {
           width: double.infinity,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Garden(back door)',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  Text(
-                    '1st camera',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                ],
-              ),
-            ]),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      loc_name,
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    Text(
+                      '1st camera',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
+
+  Widget liveDetails(Alert alert) {
+
+    final date = alert.createdAt.toLocal().toString().split(' ')[0]; // Extract the date portion
+
+    return Container(
+      height : 100,
+      color: Colors.grey.withOpacity(0.5),
+      child: Row(
+        children: [
+          Text(
+            date, // Use createdAt property for time
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(width: 15),
+          Container(
+            width: 2,
+            height: 120,
+            color: Colors.grey,
+          ),
+          SizedBox(width: 15),
+          Text(
+            alert.id.toString(), // Use id property for description
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(width: 5),
+          Icon(
+            Icons.run_circle,
+            color: Colors.green,
+          ),
+          SizedBox(width: 15),
+          Text(
+            "UNKNOWN DETECTED", // Use id property for description
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Image.asset(
+                "assets/profile.png", // Use alertImage property for the image URL
+                fit: BoxFit.fill,
+                width: 120,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
-Widget liveDetails() {
-  return Container(
-    height: 100,
-    color: Colors.grey.withOpacity(0.5),
-    child: Row(children: [
-      Text(
-        '10:36:12 AM',
-        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(
-        width: 15,
-      ),
-      Container(
-        width: 2,
-        height: 120,
-        color: Colors.grey,
-      ),
-      SizedBox(
-        width: 15,
-      ),
-      Text(
-        'Human Detected',
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(
-        width: 5,
-      ),
-      Icon(
-        Icons.run_circle,
-        color: Colors.green,
-      ),
-      SizedBox(
-        width: 15,
-      ),
-      Image.network(
-        'https://img.freepik.com/premium-vector/living-room-with-chair-sofa-window-bookshelf-flat-ozy-interior-cartoon-style_273525-112.jpg?w=1060',
-        fit: BoxFit.fill,
-        width: 120,
-      ),
-    ]),
-  );
+
+class Alert {
+  final int id;
+  final int userId;
+  final String alertImage;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  Alert({
+    required this.id,
+    required this.userId,
+    required this.alertImage,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory Alert.fromJson(Map<String, dynamic> json) {
+    return Alert(
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+      alertImage: json['alert_image'] ?? '',
+      createdAt: DateTime.parse(json['created_at'] ?? ''),
+      updatedAt: DateTime.parse(json['updated_at'] ?? ''),
+    );
+  }
 }
+

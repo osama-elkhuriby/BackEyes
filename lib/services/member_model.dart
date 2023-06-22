@@ -1,39 +1,13 @@
 class MemberModel {
-  int? id;
-  int? userId;
-  String? memberName;
-  String? memberImage;
-  String? createdAt;
-  String? updatedAt;
+  final String memberName;
+  final String memberImage;
 
-  MemberModel({
-    this.id,
-    this.userId,
-    this.memberName,
-    this.memberImage,
-    this.createdAt,
-    this.updatedAt,
-  });
+  MemberModel({required this.memberName, required this.memberImage});
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
     return MemberModel(
-      id: json['id'],
-      userId: json['user_id'],
-      memberName: json['member_name'],
-      memberImage: json['member_image'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      memberName: json['member_name'] as String,
+      memberImage: json['member_image'] as String,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = id;
-    data['user_id'] = userId;
-    data['member_name'] = memberName;
-    data['member_image'] = memberImage;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    return data;
   }
 }
