@@ -12,7 +12,7 @@ class AddMembersPage extends StatefulWidget {
 }
 
 class _AddMembersPageState extends State<AddMembersPage> {
-  File? _imageFile;
+  File? _imageFile = null;
   final _memberNameController = TextEditingController();
 
   Future<void> _pickImage(ImageSource source) async {
@@ -83,7 +83,7 @@ class _AddMembersPageState extends State<AddMembersPage> {
                 onPressed: _saveMember,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
-                  primary: const Color(0xFF00101D),
+                  backgroundColor: const Color(0xFF00101D),
                 ),
                 child: const Text('Save'),
               ),
@@ -99,10 +99,10 @@ class _AddMembersPageState extends State<AddMembersPage> {
       height: 200,
       width: 200,
       decoration: BoxDecoration(
-        image: _imageFile != null
-            ? DecorationImage(image: FileImage(_imageFile!), fit: BoxFit.cover)
-            : const DecorationImage(
-          image: AssetImage('assets/p.png'),
+        image: DecorationImage(
+          image: _imageFile != null
+              ? FileImage(_imageFile!) as ImageProvider<Object>
+              : const AssetImage('assets/p.png'),
           fit: BoxFit.cover,
         ),
       ),
@@ -143,12 +143,12 @@ class _AddMembersPageState extends State<AddMembersPage> {
     );
   }
 
+
   Future<void> _saveMember() async {
     final url = 'http://127.0.0.1/BackEyes_v2/public/api/members'; // Replace with your API endpoint URL
 
     // Get the member name and image file
     final memberName = _memberNameController.text;
-    final imageFile = _imageFile;
 
     if (memberName.isEmpty) {
       showDialog(
@@ -156,23 +156,6 @@ class _AddMembersPageState extends State<AddMembersPage> {
         builder: (context) => AlertDialog(
           title: const Text('Error'),
           content: const Text('Please enter the member name'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
-
-    if (imageFile == null) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Please select an image'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -192,10 +175,15 @@ class _AddMembersPageState extends State<AddMembersPage> {
       request.fields['member_name'] = memberName;
 
       // Attach the image file
-      request.files.add(await http.MultipartFile.fromPath(
+      final fileStream = http.ByteStream(_imageFile!.openRead());
+      final length = await _imageFile!.length();
+      final multipartFile = http.MultipartFile(
         'member_image',
-        imageFile.path,
-      ));
+        fileStream,
+        length,
+        filename: _imageFile!.path.split('/').last,
+      );
+      request.files.add(multipartFile);
 
       // Send the request
       final response = await request.send();

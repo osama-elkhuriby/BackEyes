@@ -1,16 +1,23 @@
-# prop
+# BackEyes
 
-A new Flutter project.
 
-## Getting Started
+“Surveillance cameras system
+Based on AI & ML”
 
-This project is a starting point for a Flutter application.
+## Abstract
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Considering the digital transformation and artificial intelligence technology,
+solution of many daily problems has become highly dependent on it
+One of these daily problems that occur in every Egyptian home is the question:
+How do we provide security?
+Our project starts with a monitoring system that provides safety to the user
+anywhere and uses artificial intelligence (AI) and machine learning (ML).
+then our application will warn the user when any abnormal behavior occurs
+The following list shows the main objectives of the project:-
+- User profile who can edit the number of cameras in each of his
+rooms.
+- When an abnormal act occurs such as (theft - strange people in the room or
+around the house ...etc.)Take pictures of the event using artificial
+intelligence (AI) and machine learning (ML) algorithms.
+- The user can see the warning message through the mobile application.
+- User can add their own cameras to our database after reviewing them.

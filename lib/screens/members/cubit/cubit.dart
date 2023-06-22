@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:prop/screens/members/cubit/states.dart';
 import 'package:prop/services/member_model.dart';
+import 'package:prop/services/users.dart';
 
 import '../../../shared/network/local_network.dart';
 
@@ -15,7 +16,7 @@ class MembersCubit extends Cubit<MembersStates> {
   List<MemberModel> memberList = [];
 
   void getMembers() async {
-    String token = CacheNetwork.getCacheData(key: 'token');
+    String? token = User.loggedInUser!.apiToken ;
     emit(MembersLoadingState());
     try {
       final response = await http.get(Uri.parse("http://127.0.0.1/BackEyes_v2/public/api/members"),
@@ -31,7 +32,7 @@ class MembersCubit extends Cubit<MembersStates> {
           throw Exception('Failed to load members. Response body is not a List');
         }
         memberList = responseBody.map((member) => MemberModel.fromJson(member)).toList();
-        emit(MembersSuccessState(memberList as MemberModel));
+        emit(MembersSuccessState(memberList));
       } else {
         throw Exception('Failed to load data.');
       }
@@ -42,3 +43,5 @@ class MembersCubit extends Cubit<MembersStates> {
   }
 
 }
+
+
